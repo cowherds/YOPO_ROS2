@@ -113,6 +113,17 @@ ros2 topic echo /so3_control/pos_cmd --once
 这是 `ros2 launch` 正常行为，不是死锁。  
 前台常驻意味着节点在持续运行。
 
+### 8.4 `AttributeError: module 'em' has no attribute 'BUFFERED_OPT'`
+
+原因：构建时误用了 Conda 里的 `python`/`em`，与 ROS2 Humble 的 `rosidl_adapter` 不兼容。  
+解决：使用仓库内脚本重新构建（脚本已固定 ROS2 使用 `/usr/bin/python3`）：
+
+```bash
+cd ~/YOPO_ROS2
+source /opt/ros/humble/setup.bash
+bash scripts/build_controller_ros2.sh
+```
+
 ## 9. 清理构建产物（发布前）
 
 ```bash

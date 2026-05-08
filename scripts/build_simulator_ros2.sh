@@ -26,13 +26,16 @@ if [[ -n "${YOPO_CUDA_ARCH:-}" || -n "${YOPO_CUDA_ARCH_FLAGS:-}" ]]; then
     --build-base build_ros2 \
     --install-base install_ros2 \
     --cmake-args \
+      -DPython3_EXECUTABLE=/usr/bin/python3 \
       ${YOPO_CUDA_ARCH:+-DYOPO_CUDA_ARCH=${YOPO_CUDA_ARCH}} \
       ${YOPO_CUDA_ARCH_FLAGS:+-DYOPO_CUDA_ARCH_FLAGS=${YOPO_CUDA_ARCH_FLAGS}}
 else
   colcon --log-base log_ros2 build --symlink-install \
     --base-paths . \
     --build-base build_ros2 \
-    --install-base install_ros2
+    --install-base install_ros2 \
+    --cmake-args \
+      -DPython3_EXECUTABLE=/usr/bin/python3
 fi
 
 echo

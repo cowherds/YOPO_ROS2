@@ -19,7 +19,9 @@ cd "${CTRL_DIR}"
 colcon --log-base log_ros2 build --symlink-install \
   --base-paths utils/quadrotor_msgs so3_control so3_quadrotor_simulator utils/yopo_bringup \
   --build-base build_ros2 \
-  --install-base install_ros2
+  --install-base install_ros2 \
+  --cmake-args \
+    -DPython3_EXECUTABLE=/usr/bin/python3
 
 echo
 echo "Controller ROS2 build finished."
