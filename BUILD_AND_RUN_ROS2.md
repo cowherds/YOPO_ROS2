@@ -81,7 +81,43 @@ ros2 launch yopo_bringup system.launch.py trial:=1 epoch:=50
 
 启动后终端会常驻，这是正常行为（launch 前台运行，等待 Ctrl+C 退出）。
 
-## 7. 启动后健康检查
+## 7. 三终端精确清单（手动分步）
+
+如果你希望按 `Controller` / `Simulator` / `YOPO Planner` 分开启动，请按以下顺序执行。
+
+### 7.1 终端 1：Controller（先启动）
+
+```bash
+cd ~/YOPO_ROS2
+source /opt/ros/humble/setup.bash
+source ~/YOPO_ROS2/Controller/src/install_ros2/setup.bash
+ros2 launch so3_quadrotor_simulator simulator_attitude_control.launch.py
+```
+
+### 7.2 终端 2：Simulator（第二个启动）
+
+```bash
+cd ~/YOPO_ROS2
+source /opt/ros/humble/setup.bash
+source ~/YOPO_ROS2/Controller/src/install_ros2/setup.bash
+source ~/YOPO_ROS2/Simulator/src/install_ros2/setup.bash
+ros2 run sensor_simulator sensor_simulator
+```
+
+### 7.3 终端 3：YOPO Planner（最后启动）
+
+```bash
+cd ~/YOPO_ROS2
+source /opt/ros/humble/setup.bash
+source ~/YOPO_ROS2/Controller/src/install_ros2/setup.bash
+conda activate yopo
+cd YOPO
+python test_yopo_ros.py --ros_version ros2 --trial=1 --epoch=50
+```
+
+> 说明：`sensor_simulator` 包的可执行名是 `sensor_simulator`，不是 `sensor_simulator_cuda`。
+
+## 8. 启动后健康检查
 
 新开一个终端执行：
 
@@ -96,24 +132,24 @@ ros2 topic echo /so3_control/pos_cmd --once
 
 若三条均有输出，说明主链路正常。
 
-## 8. 常见问题
+## 9. 常见问题
 
-### 8.1 `ROS2 requested, but rclpy is not available`
+### 9.1 `ROS2 requested, but rclpy is not available`
 
 原因：`yopo` 环境 Python 版本不是 3.10。  
 解决：重建 `conda` 环境为 `python=3.10`。
 
-### 8.2 `Unsupported gpu architecture 'compute_89'`
+### 9.2 `Unsupported gpu architecture 'compute_89'`
 
 原因：当前 CUDA 工具链不支持自动探测到的架构。  
 解决：设置 `YOPO_CUDA_ARCH=86` 后重新构建。
 
-### 8.3 启动时卡在终端不返回
+### 9.3 启动时卡在终端不返回
 
 这是 `ros2 launch` 正常行为，不是死锁。  
 前台常驻意味着节点在持续运行。
 
-### 8.4 `AttributeError: module 'em' has no attribute 'BUFFERED_OPT'`
+### 9.4 `AttributeError: module 'em' has no attribute 'BUFFERED_OPT'`
 
 原因：构建时误用了 Conda 里的 `python`/`em`，与 ROS2 Humble 的 `rosidl_adapter` 不兼容。  
 解决：使用仓库内脚本重新构建（脚本已固定 ROS2 使用 `/usr/bin/python3`）：
@@ -124,7 +160,7 @@ source /opt/ros/humble/setup.bash
 bash scripts/build_controller_ros2.sh
 ```
 
-## 9. 清理构建产物（发布前）
+## 10. 清理构建产物（发布前）
 
 ```bash
 cd ~/YOPO_ROS2
