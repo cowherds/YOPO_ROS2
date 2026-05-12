@@ -124,7 +124,6 @@ rviz2 -d yopo_ros2.rviz
 ```
 
 
-
 > 说明：`sensor_simulator` 包的可执行名是 `sensor_simulator`，不是 `sensor_simulator_cuda`。
 
 ## 8. 启动后健康检查
